@@ -1,8 +1,6 @@
 import { Card } from '@/components/ui/Card';
-import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -14,7 +12,6 @@ type Meeting = {
 };
 
 export default function HomeScreen() {
-  const router = useRouter();
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
   const [data, setData] = useState<Meeting[] | null>(null);
@@ -92,33 +89,6 @@ export default function HomeScreen() {
               )}
             </>
           )}
-        </View>
-
-        {/* Action Buttons */}
-        <View style={styles.actionsSection}>
-          <View style={styles.actionRow}>
-            <View style={styles.actionItem}>
-              <Text style={[styles.actionIcon, { color: colors.tint }]}>📝</Text>
-              <Text style={[styles.actionLabel, { color: colors.text }]}>Jadwal Ruang Meeting</Text>
-            </View>
-            <PrimaryButton
-              title="Lihat"
-              onPress={() => router.push('/jadwal')}
-              style={styles.actionButton}
-            />
-          </View>
-
-          <View style={styles.actionRow}>
-            <View style={styles.actionItem}>
-              <Text style={[styles.actionIcon, { color: colors.tint }]}>🏢</Text>
-              <Text style={[styles.actionLabel, { color: colors.text }]}>Booking Ruang Meeting</Text>
-            </View>
-            <PrimaryButton
-              title="Buat"
-              onPress={() => router.push('/pesan')}
-              style={styles.actionButton}
-            />
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -204,34 +174,5 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 14,
     textAlign: 'center',
-  },
-  actionsSection: {
-    marginBottom: 24,
-  },
-  actionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    marginBottom: 12,
-    borderRadius: 12,
-    backgroundColor: '#F8FAFC',
-  },
-  actionItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  actionIcon: {
-    fontSize: 24,
-    marginRight: 16,
-  },
-  actionLabel: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  actionButton: {
-    minWidth: 80,
   },
 });

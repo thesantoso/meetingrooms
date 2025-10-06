@@ -37,13 +37,11 @@ export function DateTimePickerInput({
 
     const handleChange = (event: any, selectedDate?: Date) => {
         if (Platform.OS === 'android') {
-            // Android: close picker immediately after selection or cancellation
             setShow(false);
             if (event.type === 'set' && selectedDate) {
                 onChange(selectedDate);
             }
         } else {
-            // iOS: update the temporary value but keep picker open
             if (selectedDate) {
                 onChange(selectedDate);
             }
