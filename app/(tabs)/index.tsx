@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-start',
   },
   avatar: {
     width: 50,
@@ -110,14 +111,17 @@ const styles = StyleSheet.create({
   },
   profileInfo: {
     flex: 1,
+    justifyContent: 'center',
   },
   userName: {
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 2,
+    lineHeight: 24,
   },
   userRole: {
     fontSize: 14,
+    lineHeight: 18,
   },
   content: {
     flex: 1,
