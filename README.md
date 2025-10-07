@@ -1,50 +1,104 @@
-# Welcome to your Expo app 👋
+# Meeting Room Booking App �
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplikasi pemesanan ruang meeting yang mudah digunakan, dibuat dengan React Native dan Expo. Aplikasi ini memungkinkan pengguna untuk memesan ruang meeting, melihat jadwal, dan mengelola reservasi dengan interface yang bersih dan intuitif.
 
-## Get started
+## ✨ Fitur Utama
 
-1. Install dependencies
+- **Halaman Welcome** - Selamat datang yang ramah untuk pengguna baru
+- **Login Sistem** - Autentikasi pengguna yang aman
+- **Dashboard Home** - Lihat ringkasan meeting dan profil pengguna
+- **Pesan Ruangan** - Form pemesanan ruang meeting yang lengkap
+- **Jadwal Ruangan** - Melihat semua jadwal meeting yang tersedia
+- **UI Modern** - Desain dengan tema soft dan warna yang nyaman di mata
 
-   ```bash
-   npm install
-   ```
+## 🚀 Cara Menjalankan Aplikasi
 
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### 1. Install Dependencies
 
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Jalankan Server Development
 
-## Learn more
+```bash
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Buka Aplikasi di Device
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Setelah server berjalan, Anda bisa membuka aplikasi di:
 
-## Join the community
+- **📱 Mobile (Expo Go)**: Scan QR code yang muncul di terminal
+- **🌐 Web Browser**: Buka http://localhost:8081
+- **📲 iOS Simulator**: Tekan `i` di terminal
+- **🤖 Android Emulator**: Tekan `a` di terminal
 
-Join our community of developers creating universal apps.
+## 🛠️ Teknologi yang Digunakan
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **React Native** - Framework mobile app
+- **Expo Router** - File-based routing system
+- **TypeScript** - Type safety dan developer experience
+- **React Native Safe Area Context** - Layout yang aman di semua device
+- **DateTimePicker Community** - Native date/time picker
+
+## 📂 Struktur Aplikasi
+
+```
+app/
+├── index.tsx              # Welcome Screen
+├── login.tsx              # Halaman Login
+├── modal.tsx              # Modal components
+├── _layout.tsx            # Root navigation
+└── (tabs)/
+    ├── index.tsx          # Home Dashboard
+    ├── pesan.tsx          # Form Pesan Ruangan
+    ├── jadwal.tsx         # Jadwal Ruangan
+    └── _layout.tsx        # Tab navigation
+
+components/
+├── ui/                    # Reusable UI components
+│   ├── FormInput.tsx
+│   ├── PrimaryButton.tsx
+│   ├── Dropdown.tsx
+│   └── ...
+└── ...
+
+constants/
+└── theme.ts               # Color theme & styles
+```
+
+## 🎨 Theme & Design
+
+Aplikasi menggunakan tema soft dengan palet warna yang lembut:
+
+- **Primary Blue**: #6B73FF
+- **Light Background**: #F8F9FF
+- **Minimal Shadows**: Design yang bersih tanpa shadow berlebihan
+
+## 📝 Flow Navigasi
+
+1. **Welcome Screen** → Halaman pembuka aplikasi
+2. **Login** → Autentikasi pengguna
+3. **Tabbed Interface**:
+   - Home (Dashboard & jadwal)
+   - Pesan Ruangan (Form booking)
+   - Jadwal Ruangan (Lihat semua jadwal)
+
+## 🔧 Development
+
+Project ini menggunakan [Expo Router](https://docs.expo.dev/router/introduction) dengan file-based routing. Edit file di dalam folder **app** untuk mengembangkan fitur baru.
+
+Untuk development yang optimal:
+
+- Gunakan TypeScript untuk type safety
+- Follow struktur component yang sudah ada
+- Manfaatkan theme system di `constants/theme.ts`
+
+## 📞 Support
+
+Jika ada pertanyaan atau issue, silakan hubungi tim development atau buat issue di repository ini.
+
+---
+
+_Dibuat dengan ❤️ menggunakan React Native & Expo_
