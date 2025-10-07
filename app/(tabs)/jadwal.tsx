@@ -4,7 +4,6 @@ import { Dropdown } from '@/components/ui/Dropdown';
 import { ROOM_OPTIONS } from '@/constants/rooms';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useMeetingFilter } from '@/hooks/useMeetingFilter';
 import { useMeetings } from '@/hooks/useMeetings';
 import { formatters } from '@/utils/formatters';
 import React from 'react';
@@ -14,21 +13,25 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function JadwalScreen() {
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
-    const { meetings, loading, error, refreshMeetings } = useMeetings();
 
     const {
+        // Data & loading states
+        meetings,
+        loading,
+        error,
+        refreshMeetings,
+        // Filtering functionality
         selectedRoom,
         selectedDate,
         setSelectedRoom,
         setSelectedDate,
-        filterMeetings,
         resetFilters,
         getActiveFiltersCount,
         getFilterSummary,
-    } = useMeetingFilter();
+    } = useMeetings();
 
-    // Filter meetings based on selected room and date
-    const filteredMeetings = filterMeetings(meetings); function renderMeetingItem({ item, index }: { item: any; index: number }) {
+    // Use meetings which is already filtered
+    const filteredMeetings = meetings; function renderMeetingItem({ item, index }: { item: any; index: number }) {
         return (
             <Card style={styles.meetingCard}>
                 <View style={styles.meetingContent}>
