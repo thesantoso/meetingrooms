@@ -1,10 +1,14 @@
 import { Card } from '@/components/ui/Card';
+import { DateTimePickerInput } from '@/components/ui/DateTimePickerInput';
+import { Dropdown } from '@/components/ui/Dropdown';
+import { ROOM_OPTIONS } from '@/constants/rooms';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useMeetingFilter } from '@/hooks/useMeetingFilter';
 import { useMeetings } from '@/hooks/useMeetings';
 import { formatters } from '@/utils/formatters';
 import React from 'react';
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function JadwalScreen() {
@@ -12,7 +16,19 @@ export default function JadwalScreen() {
     const colors = Colors[colorScheme ?? 'light'];
     const { meetings, loading, error, refreshMeetings } = useMeetings();
 
-    function renderMeetingItem({ item, index }: { item: any; index: number }) {
+    const {
+        selectedRoom,
+        selectedDate,
+        setSelectedRoom,
+        setSelectedDate,
+        filterMeetings,
+        resetFilters,
+        getActiveFiltersCount,
+        getFilterSummary,
+    } = useMeetingFilter();
+
+    // Filter meetings based on selected room and date
+    const filteredMeetings = filterMeetings(meetings); function renderMeetingItem({ item, index }: { item: any; index: number }) {
         return (
             <Card style={styles.meetingCard}>
                 <View style={styles.meetingContent}>
@@ -67,22 +83,76 @@ export default function JadwalScreen() {
                     </Text>
                 </View>
             ) : (
-                <FlatList
-                    data={meetings}
-                    keyExtractor={(item, idx) => `${item.nama_ruangan}-${item.waktu_mulai}-${idx}`}
-                    renderItem={renderMeetingItem}
-                    ListEmptyComponent={renderEmptyState}
-                    contentContainerStyle={styles.listContent}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={false}
-                            onRefresh={refreshMeetings}
-                            colors={[colors.tint]}
-                            tintColor={colors.tint}
+                <View style={styles.contentContainer}>
+                    <View style={styles.filterContainer}>
+                        {/* Filter Summary */}
+                        {getActiveFiltersCount() > 0 && (
+                            <View style={[styles.filterSummary, { backgroundColor: colors.surface }]}>
+                                <View style={styles.filterSummaryContent}>
+                                    <Text style={[styles.filterSummaryText, { color: colors.text }]}>
+                                        Filter aktif: {getFilterSummary()}
+                                    </Text>
+                                    <Text style={[styles.filterCount, { color: colors.tint }]}>
+                                        {filteredMeetings.length} meeting
+                                    </Text>
+                                </View>
+                                <TouchableOpacity
+                                    onPress={resetFilters}
+                                    style={[styles.resetButton, { backgroundColor: colors.tint }]}
+                                >
+                                    <Text style={styles.resetButtonText}>Reset</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+
+                        {/* Room Filter */}
+                        <Dropdown
+                            label="Filter Ruangan"
+                            value={selectedRoom}
+                            options={ROOM_OPTIONS}
+                            onSelect={setSelectedRoom}
+                            placeholder="Pilih ruang untuk filter"
                         />
-                    }
-                    showsVerticalScrollIndicator={false}
-                />
+
+                        {/* Date Filter */}
+                        <View style={styles.dateFilterContainer}>
+                            <DateTimePickerInput
+                                label="Filter Tanggal"
+                                value={selectedDate || new Date()}
+                                mode="date"
+                                onChange={setSelectedDate}
+                                placeholder="Pilih tanggal meeting"
+                            />
+                            {selectedDate && (
+                                <TouchableOpacity
+                                    onPress={() => setSelectedDate(null)}
+                                    style={styles.clearDateButton}
+                                >
+                                    <Text style={[styles.clearDateText, { color: colors.secondary }]}>
+                                        Clear
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                    </View>
+
+                    <FlatList
+                        data={filteredMeetings}
+                        keyExtractor={(item, idx) => `${item.nama_ruangan}-${item.waktu_mulai}-${idx}`}
+                        renderItem={renderMeetingItem}
+                        ListEmptyComponent={renderEmptyState}
+                        contentContainerStyle={styles.listContent}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={false}
+                                onRefresh={refreshMeetings}
+                                colors={[colors.tint]}
+                                tintColor={colors.tint}
+                            />
+                        }
+                        showsVerticalScrollIndicator={false}
+                    />
+                </View>
             )}
         </SafeAreaView>
     );
@@ -114,6 +184,59 @@ const styles = StyleSheet.create({
     loadingText: {
         marginTop: 12,
         fontSize: 14,
+    },
+    contentContainer: {
+        flex: 1,
+    },
+    filterContainer: {
+        paddingHorizontal: 24,
+        paddingVertical: 16,
+        paddingBottom: 8,
+        gap: 16,
+    },
+    filterSummary: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 8,
+    },
+    filterSummaryContent: {
+        flex: 1,
+    },
+    filterSummaryText: {
+        fontSize: 14,
+        fontWeight: '500',
+        marginBottom: 2,
+    },
+    filterCount: {
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    resetButton: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 6,
+    },
+    resetButtonText: {
+        color: '#FFFFFF',
+        fontSize: 12,
+        fontWeight: '600',
+    },
+    dateFilterContainer: {
+        position: 'relative',
+    },
+    clearDateButton: {
+        position: 'absolute',
+        right: 8,
+        top: 32,
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+    },
+    clearDateText: {
+        fontSize: 12,
+        fontWeight: '500',
     },
     listContent: {
         padding: 24,

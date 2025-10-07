@@ -3,17 +3,13 @@ import { DateTimePickerInput } from '@/components/ui/DateTimePickerInput';
 import { Dropdown } from '@/components/ui/Dropdown';
 import { FormInput } from '@/components/ui/FormInput';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { BOOKING_ROOM_OPTIONS, DIVISI_OPTIONS } from '@/constants/rooms';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useBooking } from '@/hooks/useBooking';
 import React from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-const ROOM_OPTIONS = [
-    { label: 'Squats Room', value: 'squats' },
-    { label: 'Lungles Room', value: 'lungles' },
-];
 
 export default function PesanScreen() {
     const colorScheme = useColorScheme();
@@ -53,18 +49,19 @@ export default function PesanScreen() {
                     </View>
 
                     <View style={styles.form}>
-                        <FormInput
+                        <Dropdown
                             label="Divisi"
                             value={values.divisi}
-                            onChangeText={(text) => setValue('divisi', text)}
-                            placeholder="Masukkan nama divisi"
+                            options={DIVISI_OPTIONS}
+                            onSelect={(value) => setValue('divisi', value)}
+                            placeholder="Pilih divisi"
                             error={errors.divisi}
                         />
 
                         <Dropdown
                             label="Ruang Meeting"
                             value={values.ruangan}
-                            options={ROOM_OPTIONS}
+                            options={BOOKING_ROOM_OPTIONS}
                             onSelect={(value) => setValue('ruangan', value)}
                             placeholder="Pilih ruang meeting"
                             error={errors.ruangan}
