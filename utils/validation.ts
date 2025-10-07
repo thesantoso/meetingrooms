@@ -60,6 +60,34 @@ export const validators = {
     }
     return null;
   },
+
+  participants: (value: number): string | null => {
+    if (value === null || value === undefined || value === 0) {
+      return "Jumlah peserta wajib diisi";
+    }
+    if (value < 1) {
+      return "Minimal 1 peserta";
+    }
+    if (value > 50) {
+      return "Maksimal 50 peserta";
+    }
+    return null;
+  },
+
+  numberRange:
+    (min: number, max: number) =>
+    (value: number): string | null => {
+      if (value === null || value === undefined) {
+        return "Field ini wajib diisi";
+      }
+      if (value < min) {
+        return `Minimal ${min}`;
+      }
+      if (value > max) {
+        return `Maksimal ${max}`;
+      }
+      return null;
+    },
 };
 
 // Create validation rules for specific forms
@@ -71,5 +99,5 @@ export const loginValidationRules = {
 export const bookingValidationRules = {
   divisi: validators.required,
   ruangan: validators.required,
-  jumlah_peserta: validators.number,
+  jumlah_peserta: validators.participants,
 };

@@ -1,8 +1,9 @@
 import { AlertModal } from '@/components/ui/AlertModal';
 import { DateTimePickerInput } from '@/components/ui/DateTimePickerInput';
 import { Dropdown } from '@/components/ui/Dropdown';
-import { FormInput } from '@/components/ui/FormInput';
+import { NumberInput } from '@/components/ui/NumberInput';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { NumberInputPresets } from '@/constants/numberInputPresets';
 import { BOOKING_ROOM_OPTIONS, DIVISI_OPTIONS } from '@/constants/rooms';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -97,13 +98,12 @@ export default function PesanScreen() {
                             </View>
                         </View>
 
-                        <FormInput
+                        <NumberInput
                             label="Jumlah Peserta"
-                            value={values.jumlah_peserta.toString()}
-                            onChangeText={(text) => setValue('jumlah_peserta', Number(text) || 0)}
-                            placeholder="Masukkan jumlah peserta"
-                            keyboardType="number-pad"
+                            value={values.jumlah_peserta}
+                            onValueChange={(value) => setValue('jumlah_peserta', value)}
                             error={errors.jumlah_peserta}
+                            {...NumberInputPresets.participants}
                         />
 
                         <View style={styles.submitContainer}>
