@@ -1,64 +1,27 @@
 import { Card } from '@/components/ui/Card';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import React, { useEffect, useState } from 'react';
+import { useMeetings } from '@/hooks/useMeetings';
+import { formatters } from '@/utils/formatters';
+import React from 'react';
 import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-type Meeting = { waktu_mulai: string; waktu_selesai: string; nama_ruangan: string };
 
 export default function JadwalScreen() {
     const colorScheme = useColorScheme();
     const colors = Colors[colorScheme ?? 'light'];
-    const [data, setData] = useState<Meeting[] | null>(null);
-    const [loading, setLoading] = useState(true);
+    const { meetings, loading, error, refreshMeetings } = useMeetings();
 
-    useEffect(() => {
-        let mounted = true;
-        async function load() {
-            try {
-                const res = await fetch('https://uat-api.ftlgym.com/api/v1/test/jadwalruangan');
-                const json = await res.json();
-                if (mounted) setData(json?.data ?? []);
-            } catch (err) {
-                if (mounted) setData([]);
-            } finally {
-                if (mounted) setLoading(false);
-            }
-        }
-        load();
-        return () => {
-            mounted = false;
-        };
-    }, []);
-
-    const [refreshing, setRefreshing] = useState(false);
-
-    async function loadData() {
-        try {
-            const res = await fetch('https://uat-api.ftlgym.com/api/v1/test/jadwalruangan');
-            const json = await res.json();
-            setData(json?.data ?? []);
-        } catch (err) {
-            setData([]);
-        } finally {
-            setLoading(false);
-            setRefreshing(false);
-        }
-    }
-
-    function onRefresh() {
-        setRefreshing(true);
-        loadData();
-    }
-
-    function renderMeetingItem({ item, index }: { item: Meeting; index: number }) {
+    function renderMeetingItem({ item, index }: { item: any; index: number }) {
         return (
             <Card style={styles.meetingCard}>
                 <View style={styles.meetingContent}>
                     <View style={styles.timeContainer}>
                         <Text style={[styles.timeText, { color: colors.text }]}>
-                            {item.waktu_mulai} - {item.waktu_selesai}
+                            {formatters.formatTime(item.waktu_mulai)} - {formatters.formatTime(item.waktu_selesai)}
+                        </Text>
+                        <Text style={[styles.durationText, { color: colors.secondary }]}>
+                            Durasi: {formatters.formatDuration(item.waktu_mulai, item.waktu_selesai)}
                         </Text>
                     </View>
                     <View style={styles.roomContainer}>
@@ -105,15 +68,15 @@ export default function JadwalScreen() {
                 </View>
             ) : (
                 <FlatList
-                    data={data}
+                    data={meetings}
                     keyExtractor={(item, idx) => `${item.nama_ruangan}-${item.waktu_mulai}-${idx}`}
                     renderItem={renderMeetingItem}
                     ListEmptyComponent={renderEmptyState}
                     contentContainerStyle={styles.listContent}
                     refreshControl={
                         <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
+                            refreshing={false}
+                            onRefresh={refreshMeetings}
                             colors={[colors.tint]}
                             tintColor={colors.tint}
                         />
@@ -167,6 +130,10 @@ const styles = StyleSheet.create({
     timeText: {
         fontSize: 14,
         fontWeight: '500',
+    },
+    durationText: {
+        fontSize: 12,
+        marginTop: 4,
     },
     roomContainer: {
         flex: 1,

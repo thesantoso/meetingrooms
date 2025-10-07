@@ -1,40 +1,18 @@
 import { Card } from '@/components/ui/Card';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import React, { useEffect, useState } from 'react';
+import { useMeetings } from '@/hooks/useMeetings';
+import { formatters } from '@/utils/formatters';
+import React from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
-type Meeting = {
-  waktu_mulai: string;
-  waktu_selesai: string;
-  nama_ruangan: string;
-};
 
 export default function HomeScreen() {
   const colorScheme = useColorScheme();
   const colors = Colors[colorScheme ?? 'light'];
-  const [data, setData] = useState<Meeting[] | null>(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let mounted = true;
-    async function load() {
-      try {
-        const res = await fetch('https://uat-api.ftlgym.com/api/v1/test/jadwalruangan');
-        const json = await res.json();
-        if (mounted) setData(json?.data ?? []);
-      } catch (err) {
-        if (mounted) setData([]);
-      } finally {
-        if (mounted) setLoading(false);
-      }
-    }
-    load();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  // Use custom hook for clean data management
+  const { meetings, loading, error } = useMeetings();
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -67,15 +45,24 @@ export default function HomeScreen() {
             </View>
           ) : (
             <>
-              {data && data.length > 0 ? (
-                data.map((item, idx) => (
-                  <Card key={item.nama_ruangan + idx} style={styles.meetingCard}>
+              {error ? (
+                <Card style={styles.emptyCard}>
+                  <Text style={[styles.emptyText, { color: colors.secondary }]}>
+                    {error}
+                  </Text>
+                </Card>
+              ) : meetings && meetings.length > 0 ? (
+                meetings.map((meeting, idx) => (
+                  <Card key={meeting.nama_ruangan + idx} style={styles.meetingCard}>
                     <View style={styles.meetingInfo}>
                       <Text style={[styles.meetingTime, { color: colors.text }]}>
-                        {item.waktu_mulai} - {item.waktu_selesai}
+                        {formatters.formatTime(meeting.waktu_mulai)} - {formatters.formatTime(meeting.waktu_selesai)}
                       </Text>
                       <Text style={[styles.meetingRoom, { color: colors.tint }]}>
-                        {item.nama_ruangan}
+                        {meeting.nama_ruangan}
+                      </Text>
+                      <Text style={[styles.meetingDuration, { color: colors.secondary }]}>
+                        Durasi: {formatters.formatDuration(meeting.waktu_mulai, meeting.waktu_selesai)}
                       </Text>
                     </View>
                   </Card>
@@ -166,6 +153,10 @@ const styles = StyleSheet.create({
   meetingRoom: {
     fontSize: 16,
     fontWeight: '600',
+  },
+  meetingDuration: {
+    fontSize: 12,
+    marginTop: 4,
   },
   emptyCard: {
     paddingVertical: 24,
